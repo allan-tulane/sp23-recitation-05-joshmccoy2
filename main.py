@@ -3,11 +3,37 @@ import tabulate
 
 
 def qsort(a, pivot_fn):
-    ## TO DO
-    pass
-    
+  if len(a) == 0:
+    return a
+  else:
+    p = pivot_fn(a)
+    l = list(filter(lambda x: x < pivot, a))
+    m = list(filter(lambda x: x == pivot, a))
+    r = list(filter(lambda x: x > pivot, a))
+
+    return qsort(l, pivot_fn) + m + qsort(r, pivot_fn)
+
+    return l + [p] + r
+
+
+def ssort(L):
+  for i in range(len(L)):
+    #print(L)
+    m = L.index(min(L[i:]))
+    L[i], L[m] = L[m], L[i]
+  return L
+
+
+def randomize(a):
+  return random.choice(a)
+
+
+def fixed(a):
+  return a[0]
+
+
 def time_search(sort_fn, mylist):
-    """
+  """
     Return the number of milliseconds to run this
     sort function on this list.
 
@@ -24,13 +50,15 @@ def time_search(sort_fn, mylist):
       the number of milliseconds it takes to run this
       search function on this input.
     """
-    start = time.time()
-    sort_fn(mylist)
-    return (time.time() - start) * 1000
-    ###
+  start = time.time()
+  sort_fn(mylist)
+  return (time.time() - start) * 1000
+  ###
 
-def compare_sort(sizes=[100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]):
-    """
+
+def compare_sort(
+    sizes=[100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000]):
+  """
     Compare the running time of different sorting algorithms.
 
     Returns:
@@ -39,33 +67,38 @@ def compare_sort(sizes=[100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000, 10
       indicating the number of milliseconds it takes
       for each method to run on each value of n
     """
-    ### TODO - sorting algorithms for comparison
-    qsort_fixed_pivot = # 
-    qsort_random_pivot = #
-    tim_sort = #
-    result = []
-    for size in sizes:
-        # create list in ascending order
-        mylist = list(range(size))
-        # shuffles list if needed
-        #random.shuffle(mylist)
-        result.append([
-            len(mylist),
-            time_search(qsort_fixed_pivot, mylist),
-            time_search(qsort_random_pivot, mylist),
-        ])
-    return result
-    ###
+  ### TODO - sorting algorithms for comparison
+  qsort_fixed_pivot = lambda a: a[0]
+  qsort_random_pivot = lambda a: random.choice(a)
+  tim_sort = lambda a: sorted(a)
+  selection_sort = lambda a: ssort(a)
+  result = []
+  for size in sizes:
+    # create list in ascending order
+    mylist = list(range(size))
+    # shuffles list if needed
+    #random.shuffle(mylist)
+    result.append([
+      len(mylist),
+      time_search(qsort_fixed_pivot, mylist),
+      time_search(qsort_random_pivot, mylist),
+    ])
+  return result
+  ###
+
 
 def print_results(results):
-    """ change as needed for comparisons """
-    print(tabulate.tabulate(results,
-                            headers=['n', 'qsort-fixed-pivot', 'qsort-random-pivot'],
-                            floatfmt=".3f",
-                            tablefmt="github"))
+  """ change as needed for comparisons """
+  print(
+    tabulate.tabulate(results,
+                      headers=['n', 'ssort-fixed-pivot', 'ssort-random-pivot'],
+                      floatfmt=".3f",
+                      tablefmt="github"))
+
 
 def test_print():
-    print_results(compare_sort())
+  print_results(compare_sort())
+
 
 random.seed()
 test_print()
